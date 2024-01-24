@@ -1,4 +1,3 @@
-
 What are the methods for delaying the loading of JavaScript scripts? 
 Delayed loading is to wait until the page is loaded before loading the JavaScript file. It helps to speed up page loading. 
 
