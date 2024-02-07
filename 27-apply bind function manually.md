@@ -1,0 +1,82 @@
+
+Implementing the apply Function Manually
+
+Steps to implement the apply function:
+
+1. 
+Determine if the calling object is a function. Even though it's defined on the function's prototype, there may be instances where it is invoked using methods like call.
+
+2. 
+Check if the incoming context object exists; if not, set it to window.
+
+3. 
+Assign the function as a property of the context object.
+
+4. 
+Determine if the parameter values have been passed in.
+
+5. 
+Invoke the method using the context object and save the returned result.
+
+6. 
+Remove the property that was just added.
+
+7. 
+Return the result
+
+// apply 函数实现
+Function.prototype.myApply = function(context) {
+  // 判断调用对象是否为函数
+  if (typeof this !== "function") {
+    throw new TypeError("Error");
+  }
+  let result = null;
+  // 判断 context 是否存在，如果未传入则为 window
+  context = context || window;
+  // 将函数设为对象的方法
+  context.fn = this;
+  // 调用方法
+  if (arguments[1]) {
+    result = context.fn(...arguments[1]);
+  } else {
+    result = context.fn();
+  }
+  // 将属性删除
+  delete context.fn;
+  return result;
+};
+
+
+Implementing the bind Function Manually
+
+Steps to implement the bind function:
+
+1. 
+Determine if the calling object is a function. Even though it's defined on the function's prototype, there may be instances where it is invoked using methods like call.
+
+2. 
+Save a reference to the current function and retrieve the rest of the passed-in parameter values.
+
+3. 
+Return a new function.
+
+4. 
+ Internally, the function uses apply to bind the function call. It's important to account for the function being used as a constructor. In such cases, the current function's 'this' needs to be passed to apply, while in all other cases, the specified context object is passed.
+
+// bind 函数实现
+Function.prototype.myBind = function(context) {
+  // 判断调用对象是否为函数
+  if (typeof this !== "function") {
+    throw new TypeError("Error");
+  }
+  // 获取参数
+  var args = [...arguments].slice(1),
+      fn = this;
+  return function Fn() {
+    // 根据调用方式，传入不同绑定值
+    return fn.apply(
+      this instanceof Fn ? this : context,
+      args.concat(...arguments)
+    );
+  };
+};
